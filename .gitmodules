@@ -1,0 +1,12 @@
+[submodule "ws-node-demo"]
+	path = ws-node-demo
+	url = https://github.com/WillStreeter/ws-node-demo.git
+[submodule "ws-nginx-demo"]
+	path = ws-nginx-demo
+	url = https://github.com/WillStreeter/ws-nginx-demo.git
+[submodule "ws-ngx-login-demo"]
+	path = ws-ngx-login-demo
+	url = https://github.com/WillStreeter/ws-ngx-login-demo.git
+[submodule "ws-mongo-demo"]
+	path = ws-mongo-demo
+	url = https://github.com/WillStreeter/ws-mongo-demo.git

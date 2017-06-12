@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+
+  mongo:
+    restart: always
+    container_name: "mongo"
+    build:
+      context: ./ws-mongo-demo
+      dockerfile: ./Dockerfile
+    image:  ws-mongo-demo:latest
+    ports:
+      - "27017:27017"
+
+  ws-node-demo:
+    restart: always
+    build:
+      context: ./ws-node-demo
+      dockerfile: ./Dockerfile.dev
+    image:  local-ws-node-demo-dev:latest
+    command: ['npm', 'run', 'start:dev']
+    container_name: ws-node-demo-container
+    environment:
+        - loglevel=none
+    links:
+        - "mongo:mongo"
+    working_dir: "/usr/src/app"
+    volumes:
+        - "./ws-node-demo:/usr/src/app"
+        - "/usr/src/app/node_modules"
+    ports:
+        - "8080:8080"
+        - "5858:5858"
+
+
+  ws-ngx-login-demo:
+    restart: always
+    container_name: ws-ngx-login-demo-container
+    build:
+      context: ./ws-ngx-login-demo
+      dockerfile: ./Dockerfile.dev
+    image: local-ws-ngx-login-demo-dev:latest
+    command: ['npm', 'run', 'start']
+    volumes:
+      - ./ws-ngx-login-demo/dist:/app/dist
+      - ./ws-ngx-login-demo/tools:/app/tools
+      - ./ws-ngx-login-demo/src:/app/src
+      - ./ws-ngx-login-demo/yarn.lock:/app/yarn.lock:rw
+      - ./ws-ngx-login-demo/tsconfig.json:/app/tsconfig.json
+      - ./ws-ngx-login-demo/package.json:/app/package.json:rw
+      - ./ws-ngx-login-demo/gulpfile.ts:/app/gulpfile.ts:rw
+    links:
+        - "ws-node-demo"
+    ports:
+      - '5555:5555'
+      - '3001:3001'
+
+
+  ws-nginx-demo:
+    restart: always
+    image: local-ws-nginx-demo:latest
+    build:
+      context: ./ws-nginx-demo
+      dockerfile: ./Dockerfile.dev
+    container_name: ws-nginx-demo
+    volumes:
+      - ./ws-nginx-demo/etc-dev/nginx.conf:/etc/nginx/nginx.conf:rw
+    links:
+      - "ws-node-demo"
+      - "ws-ngx-login-demo"
+    ports:
+      - "80:80"
