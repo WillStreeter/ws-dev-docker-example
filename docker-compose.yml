@@ -3,12 +3,9 @@ version: '3'
 services:
 
   mongo:
+    image: 'bitnami/mongodb:4.1'
     restart: always
     container_name: "mongo"
-    build:
-      context: ./ws-mongo-demo
-      dockerfile: ./Dockerfile
-    image:  ws-mongo-demo:latest
     ports:
       - "27017:27017"
 
